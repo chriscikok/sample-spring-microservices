@@ -1,0 +1,69 @@
+server:  
+  port: ${PORT:2222}
+
+spring:  
+  application:
+    name: account-service
+  logging:
+    pattern:
+      console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]){yellow} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
+    level:
+      org.springframework: WARN
+      org.hibernate: WARN
+
+eureka:  
+  client:
+    serviceUrl:
+      defaultZone: ${DISCOVERY_URL:http://localhost:8761}/eureka/
+  instance:
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+  
+ribbon:
+  eureka:
+    enabled: true
+    
+#security:
+#  oauth2:
+#    client:
+      # From OIDC app
+#      clientId: c50cc49b3bd6ace040e7
+#      clientSecret: 3a7ad04c1667836da85dfe6034ea223cb86a78db
+      # From Authorization Server's metadata
+#      accessTokenUri: https://github.com/login/oauth/access_token
+#      userAuthorizationUri: https://github.com/login/oauth/authorize
+#      clientAuthenticationScheme: form
+      #scope: openid profile email
+#    resource:
+      # from your Auth Server's metadata, check .well-known/openid-configuration
+      # if not in .well-known/oauth-authorization-server
+#      userInfoUri: https://api.github.com/user
+
+#security:
+#  oauth2:
+#    client:
+#      clientId: 0ff5287f0f36cce6b31c
+#      clientSecret: 8335a571732eb27ad7590d2c9d693100969ae0f2
+#      accessTokenUri: https://github.com/login/oauth/access_token
+#      userAuthorizationUri: https://github.com/login/oauth/authorize
+#      tokenName: oauth_token
+#      authenticationScheme: query
+#      clientAuthenticationScheme: form
+#    resource:
+#      userInfoUri: https://api.github.com/user
+
+security:
+  oauth2:
+    client:
+      clientId: openamoauth2
+      clientSecret: password
+      accessTokenUri: http://ubuntu.chris.com:8080/openam/oauth2/access_token
+      userAuthorizationUri: http://ubuntu.chris.com:8080/openam/oauth2/authorize
+      redirectUri: http://localhost:8080/user
+      tokenName: access_token
+      authenticationScheme: query
+      clientAuthenticationScheme: form
+      scope: mail cn
+    resource:
+      userInfoUri: http://ubuntu.chris.com:8080/openam/oauth2/tokeninfo
+      preferTokenInfo: false
