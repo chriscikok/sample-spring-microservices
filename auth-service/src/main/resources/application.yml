@@ -45,7 +45,7 @@ openam:
     tokenName: access_token
     authenticationScheme: query
     clientAuthenticationScheme: form
-    scope: mail cn name
+    scope: mail cn name givenName
   resource:
     userInfoUri: http://ubuntu.chris.com:8080/openam/oauth2/tokeninfo
     preferTokenInfo: false

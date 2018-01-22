@@ -11,8 +11,4 @@ public class Api {
 	  public Principal user(Principal principal) {
 	    return principal;
 	  }
-	@RequestMapping("/")
-	public String home(){
-	  return "Greeting";
-	}
 }

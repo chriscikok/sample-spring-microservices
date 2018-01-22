@@ -4,11 +4,11 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class Account {
 	
-	//@ApiModelProperty(notes = "Account ID")
+	@ApiModelProperty(notes = "Account ID")
 	private Integer id;
-	//@ApiModelProperty(notes = "Customer ID")
+	@ApiModelProperty(notes = "Customer ID")
 	private Integer customerId;
-	//@ApiModelProperty(notes = "Account Number")
+	@ApiModelProperty(notes = "Account Number")
 	private String number;
 
 	public Account() {

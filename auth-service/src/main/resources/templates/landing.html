@@ -14,7 +14,7 @@
     src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>Login</h1>
+    <h1>Landing</h1>
     <div class="container unauthenticated">
 	    <div>
 	        With Openam: <a href="/login/openam">click here</a>
@@ -25,6 +25,10 @@
 	</div>
     <div class="container authenticated" style="display: none">
         Logged in as: <span id="user"></span>
+        Result: <div id="result"></div>
+        <div>
+        	<button onClick="account()" class="btn btn-primary">Account</button>
+        </div>
         <div>
             <button onClick="logout()" class="btn btn-primary">Logout</button>
         </div>
@@ -34,11 +38,13 @@
     <script type="text/javascript">
           $
               .ajaxSetup({
+               crossOrigin: true,
                 beforeSend : function(xhr, settings) {
                   if (settings.type == 'POST' || settings.type == 'PUT'
                       || settings.type == 'DELETE') {
-                    if (!(/^http:.*/.test(settings.url) || /^https:.*/
-                        .test(settings.url))) {
+                    if (!(/^http:.*/.test(settings.url) 
+                       || /^https:.*/.test(settings.url) 
+                       )) {
                       // Only send the token to relative URLs i.e. locally.
                       xhr.setRequestHeader("X-XSRF-TOKEN",
                           Cookies.get('XSRF-TOKEN'));
@@ -46,8 +52,10 @@
                   }
                 }
               });
+          var access_token;
           $.get("/user", function(data) {
-            $("#user").html(data.userAuthentication.details.name);
+            access_token = data.userAuthentication.details.access_token;
+            $("#user").html(data.userAuthentication.details.givenName);
             $(".unauthenticated").hide();
             $(".authenticated").show();
           });
@@ -56,8 +64,21 @@
               $("#user").html('');
               $(".unauthenticated").show();
               $(".authenticated").hide();
+              location.href = '/index.html';
             })
             return true;
+          }
+          var account = function(data) {
+            $.get("http://localhost:2222/accounts", {access_token:access_token},
+            function(data){
+              console.log(data);
+              jQuery.each(data, function(i, val) {
+		            // here you can do your magic
+		            $("#result").append(document.createTextNode("ID:" + val.id));
+		            $("#result").append(document.createTextNode("," + val.customerId));
+		            $("#result").append(document.createTextNode("," + val.number));
+		        });
+            });
           }
         </script>
 </body>

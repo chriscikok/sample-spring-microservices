@@ -6,17 +6,15 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import chris.microservices.account.model.Account;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 @RestController 
 
@@ -58,6 +56,7 @@ public class AccountController {
 	}
 	
 	@ApiOperation(value = "View all acounts", notes = "")
+	@CrossOrigin(origins = "http://localhost:8080")
 	@RequestMapping(value = "/accounts", method=RequestMethod.GET, produces = "application/json")
 	public List<Account> findAll(@ModelAttribute String access_token) {
 		logger.info("Account.findAll()");
