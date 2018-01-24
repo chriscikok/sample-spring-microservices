@@ -55,7 +55,7 @@
           var access_token;
           $.get("/user", function(data) {
             access_token = data.userAuthentication.details.access_token;
-            $("#user").html(data.userAuthentication.details.givenName);
+            $("#user").html("<p>Openam: " + data.userAuthentication.details.givenName + "</p><p>" + "Github: " + data.userAuthentication.details.name + "</p>");
             $(".unauthenticated").hide();
             $(".authenticated").show();
           });
