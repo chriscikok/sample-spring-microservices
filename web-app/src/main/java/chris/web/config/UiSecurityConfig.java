@@ -39,7 +39,7 @@ public class UiSecurityConfig extends WebSecurityConfigurerAdapter{
 		// @formatter:off
 		http
 				.antMatcher("/**").authorizeRequests()
-				.antMatchers("/", "/login**", "/webjars/**", "/index.html").permitAll()
+				.antMatchers("/", "/refresh**", "/greeting**", "/login**", "/webjars/**", "/index.html").permitAll()
 				.anyRequest().authenticated()
 				.and().exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/index.html"))
 				.and().logout().logoutSuccessUrl("/index.html").permitAll()
