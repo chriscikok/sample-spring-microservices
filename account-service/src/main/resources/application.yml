@@ -22,35 +22,6 @@ eureka:
 ribbon:
   eureka:
     enabled: true
-    
-#security:
-#  oauth2:
-#    client:
-      # From OIDC app
-#      clientId: c50cc49b3bd6ace040e7
-#      clientSecret: 3a7ad04c1667836da85dfe6034ea223cb86a78db
-      # From Authorization Server's metadata
-#      accessTokenUri: https://github.com/login/oauth/access_token
-#      userAuthorizationUri: https://github.com/login/oauth/authorize
-#      clientAuthenticationScheme: form
-      #scope: openid profile email
-#    resource:
-      # from your Auth Server's metadata, check .well-known/openid-configuration
-      # if not in .well-known/oauth-authorization-server
-#      userInfoUri: https://api.github.com/user
-
-#security:
-#  oauth2:
-#    client:
-#      clientId: 0ff5287f0f36cce6b31c
-#      clientSecret: 8335a571732eb27ad7590d2c9d693100969ae0f2
-#      accessTokenUri: https://github.com/login/oauth/access_token
-#      userAuthorizationUri: https://github.com/login/oauth/authorize
-#      tokenName: oauth_token
-#      authenticationScheme: query
-#      clientAuthenticationScheme: form
-#    resource:
-#      userInfoUri: https://api.github.com/user
 
 security:
   oauth2:

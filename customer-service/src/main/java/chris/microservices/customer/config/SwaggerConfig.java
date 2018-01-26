@@ -1,4 +1,4 @@
-package chris.microservices.account.config;
+package chris.microservices.customer.config;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -37,7 +37,7 @@ public class SwaggerConfig {
 		ss.add(oauth2());
         return new Docket(DocumentationType.SWAGGER_2)  
           .select()                                  
-          .apis(RequestHandlerSelectors.basePackage("chris.microservices.account.services"))              
+          .apis(RequestHandlerSelectors.basePackage("chris.microservices.customer.services"))              
           .paths(PathSelectors.any())                          
           .build()
           .apiInfo(metaData())
@@ -51,11 +51,13 @@ public class SwaggerConfig {
 	}
 	
 	@Bean
-	SecurityConfiguration security() {
-		return SecurityConfigurationBuilder.builder().scopeSeparator(",").additionalQueryStringParams(null)
-				.useBasicAuthenticationWithAccessCodeGrant(false)
-				.build();
-	}
+	  SecurityConfiguration security() {
+	    return SecurityConfigurationBuilder.builder()
+	        .scopeSeparator(",")
+	        .additionalQueryStringParams(null)
+	        .useBasicAuthenticationWithAccessCodeGrant(false)
+	        .build();
+	  }
 	
 	List<AuthorizationScope> scopes() {
 		List<AuthorizationScope> as = new ArrayList<AuthorizationScope>();
@@ -76,7 +78,7 @@ public class SwaggerConfig {
 
     private ApiInfo metaData() {
     	ApiInfo apiInfo = new ApiInfo(
-                "Account Services",
+                "Customer Servives",
                 "Spring Boot REST API",
                 "1.0",
                 "Terms of service",

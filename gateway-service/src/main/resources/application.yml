@@ -14,13 +14,12 @@ zuul:
   routes:
     account: 
       path: /account/**
+      sensitiveHeaders:
       serviceId: account-service
     customer: 
       path: /customer/**
-      serviceId: customer-service
-    login:
-      path: /login/**
-      serviceId: auth-service          
+      sensitiveHeaders:
+      serviceId: customer-service      
 
 ribbon:
   eureka:

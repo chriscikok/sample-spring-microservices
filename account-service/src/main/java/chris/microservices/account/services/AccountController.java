@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import chris.microservices.account.model.Account;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Authorization;
+import io.swagger.annotations.AuthorizationScope;
 
 @RestController 
 
@@ -26,39 +28,36 @@ public class AccountController {
 	
 	public AccountController() {
 		accounts = new ArrayList<>();
-		accounts.add(new Account(1, 1, "111111"));
-		accounts.add(new Account(2, 2, "222222"));
-		accounts.add(new Account(3, 3, "333333"));
-		accounts.add(new Account(4, 4, "444444"));
-		accounts.add(new Account(5, 1, "555555"));
-		accounts.add(new Account(6, 2, "666666"));
-		accounts.add(new Account(7, 2, "777777"));
+		accounts.add(new Account(1, 1, "Acccount 1"));
+		accounts.add(new Account(2, 2, "Acccount 2"));
+		accounts.add(new Account(3, 3, "Acccount 3"));
+		accounts.add(new Account(4, 4, "Acccount 4"));
+		accounts.add(new Account(5, 1, "Acccount 5"));
+		accounts.add(new Account(6, 2, "Acccount 6"));
+		accounts.add(new Account(7, 2, "Acccount 7"));
 	}
 	
-	//@ApiOperation(value = "View user", response = Iterable.class)
-	@RequestMapping(value = "/user", method=RequestMethod.GET, produces = "application/json")
-	  public Principal user(Principal principal) {
-	    return principal;
-	  }
-	
-	//@ApiOperation(value = "View account by number", response = Iterable.class)
+	@ApiOperation(value = "View account by number", 
+			authorizations = {@Authorization (value = "SWAGUI")})
 	@RequestMapping(value = "/accounts/{number}", method=RequestMethod.GET, produces = "application/json")
 	public Account findByNumber(@PathVariable("number") String number) {
 		logger.info(String.format("Account.findByNumber(%s)", number));
 		return accounts.stream().filter(it -> it.getNumber().equals(number)).findFirst().get();
 	}
 	
-	//@ApiOperation(value = "View account by customer number", response = Iterable.class)
+	@ApiOperation(value = "View account by customer number", 
+			authorizations = {@Authorization (value = "SWAGUI")})
 	@RequestMapping(value = "/accounts/customer/{customer}", method=RequestMethod.GET, produces = "application/json")
 	public List<Account> findByCustomer(@PathVariable("customer") Integer customerId) {
 		logger.info(String.format("Account.findByCustomer(%s)", customerId));
 		return accounts.stream().filter(it -> it.getCustomerId().intValue()==customerId.intValue()).collect(Collectors.toList());
 	}
 	
-	@ApiOperation(value = "View all acounts", notes = "")
+	@ApiOperation(value = "View all acounts", notes = "", 
+			authorizations = {@Authorization (value = "SWAGUI")})
 	@CrossOrigin(origins = "http://localhost:8080")
 	@RequestMapping(value = "/accounts", method=RequestMethod.GET, produces = "application/json")
-	public List<Account> findAll(@ModelAttribute String access_token) {
+	public List<Account> findAll() {
 		logger.info("Account.findAll()");
 		return accounts;
 	}

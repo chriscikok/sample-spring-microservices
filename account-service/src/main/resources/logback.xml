@@ -38,6 +38,6 @@
 
 	<root level="info">
 		<appender-ref ref="STDOUT" />
-		<appender-ref ref="STASH" />
+		<!-- <appender-ref ref="STASH" /> -->
 	</root>
 </configuration>

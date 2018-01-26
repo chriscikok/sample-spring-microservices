@@ -12,3 +12,19 @@ eureka:
 ribbon:
   eureka:
     enabled: true
+    
+security:
+  oauth2:
+    client:
+      clientId: openamoauth2
+      clientSecret: password
+      accessTokenUri: http://ubuntu.chris.com:8080/openam/oauth2/access_token
+      userAuthorizationUri: http://ubuntu.chris.com:8080/openam/oauth2/authorize
+      redirectUri: http://localhost:8080/user
+      tokenName: access_token
+      authenticationScheme: query
+      clientAuthenticationScheme: form
+      scope: mail cn
+    resource:
+      userInfoUri: http://ubuntu.chris.com:8080/openam/oauth2/tokeninfo
+      preferTokenInfo: false
