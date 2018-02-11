@@ -9,30 +9,38 @@ endpoints:
   health:
     sensitive: false
 
-zuul:
-  prefix: /api
-  routes:
-    account: 
-      path: /account/**
-      sensitiveHeaders:
-      serviceId: account-service
-    customer: 
-      path: /customer/**
-      sensitiveHeaders:
-      serviceId: customer-service      
+# zuul:
+  # prefix: /api
+  # routes:
+    # account: 
+      # path: /account/**
+      # sensitiveHeaders:
+      # serviceId: account-service
+    # customer: 
+      # path: /customer/**
+      # sensitiveHeaders:
+      # serviceId: customer-service      
 
 ribbon:
+  isSecured: true
   eureka:
     enabled: true
 
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${DISCOVERY_URL:http://localhost:8761}/eureka/
     registerWithEureka: false
       
 server:
   port: 8765
+  ssl:
+    enabled: true
+    key-store: /Users/chris/EclipseProjects/sample-spring-microservices/ssl/keystore2
+    key-store-password: password
+    keyAlias: tomcat
+    trust-store: /Users/chris/EclipseProjects/sample-spring-microservices/ssl/truststore2
+    trust-store-password: password
 
 logging:
   level:
