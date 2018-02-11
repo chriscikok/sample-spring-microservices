@@ -1,0 +1,18 @@
+---
+spring:
+  profiles: standalone
+  cloud:
+    discovery:
+      enabled: false
+  security:
+    enabled: false
+security:
+  basic:
+    enabled: false
+management:
+  security:
+    enabled: false
+account-service:
+  ribbon:
+    listOfServers: localhost:2222
+---

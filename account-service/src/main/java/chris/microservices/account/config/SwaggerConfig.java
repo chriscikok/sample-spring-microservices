@@ -1,8 +1,11 @@
 package chris.microservices.account.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+
 import springfox.documentation.service.Contact;
 import springfox.documentation.service.GrantType;
 import springfox.documentation.service.SecurityScheme;
@@ -28,11 +31,16 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 @EnableAutoConfiguration
-public class SwaggerConfig {  
+public class SwaggerConfig {
+	
+	@Value("${security.oauth2.client.userAuthorizationUri}")
+	private String userAuthorizationUri;
+	
+	@Value("${security.oauth2.client.accessTokenUri}")
+	private String accessTokenUri;
 	
 	@Bean
-    public Docket api() { 
-		
+    public Docket api1() { 
 		List <SecurityScheme> ss = new ArrayList<SecurityScheme>();
 		ss.add(oauth2());
         return new Docket(DocumentationType.SWAGGER_2)  
@@ -64,8 +72,6 @@ public class SwaggerConfig {
 	}
 	
 	List<GrantType> grantTypes(){
-		String accessTokenUri = "http://ubuntu.chris.com:8080/openam/oauth2/access_token";
-		String userAuthorizationUri = "http://ubuntu.chris.com:8080/openam/oauth2/authorize";
 		TokenRequestEndpoint tRE = new TokenRequestEndpoint(userAuthorizationUri, "client_id", "client_secret");
 		TokenEndpoint tE = new TokenEndpoint(accessTokenUri, "access_token");
 		AuthorizationCodeGrant code = new AuthorizationCodeGrant(tRE, tE);
