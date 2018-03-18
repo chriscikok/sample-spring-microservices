@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" validUntil="2018-03-18T12:33:56Z" cacheDuration="PT1521808436S" entityID="mac.chris.com:10080">
+  <md:IDPSSODescriptor WantAuthnRequestsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:KeyDescriptor use="signing">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data>
+          <ds:X509Certificate>MIIDezCCAmOgAwIBAgIEFi0SgTANBgkqhkiG9w0BAQsFADBuMRAwDgYDVQQGEwdVbmtub3duMRAwDgYDVQQIEwdVbmtub3duMRAwDgYDVQQHEwdVbmtub3duMRAwDgYDVQQKEwdVbmtub3duMRAwDgYDVQQLEwdVbmtub3duMRIwEAYDVQQDEwlsb2NhbGhvc3QwHhcNMTgwMjA1MTMyOTM3WhcNMTgwNTA2MTMyOTM3WjBuMRAwDgYDVQQGEwdVbmtub3duMRAwDgYDVQQIEwdVbmtub3duMRAwDgYDVQQHEwdVbmtub3duMRAwDgYDVQQKEwdVbmtub3duMRAwDgYDVQQLEwdVbmtub3duMRIwEAYDVQQDEwlsb2NhbGhvc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCIKkhBZCaTtmbmyhInk/OWsg9rTfoiRfcVbjJSl2clG+cc0+wwq6C04B3u45Zynmv/HitvcYeiTEjaqcETWceqLFQTV52fNFHQ3gjjsCC4PX3/9sJOr8cDAcuGq3W2abusiTAF7469S/IKoTsQ2Hz+hWaSHzVT5KvQ9yr5kSTibeICKRq7b9lDIJX79MDkU55AEkBMPIKKUUYZNu2/V5V13TID2ungUI8D/yY5FubMbMWM0rl3asbIObdYIlA6LZrJfZPYwWN2A3zjciVHf+Z/99Cj0LIud1aD7MJ6aKBL7kWnB9um9w2QlBO3X4P1/IaS6GulS9islime8dEOYur9AgMBAAGjITAfMB0GA1UdDgQWBBQWkCTwZLqPBq6H0nbR2oRFN50CuDANBgkqhkiG9w0BAQsFAAOCAQEAGLlgtxnjBOhptcafjO6QNQFNehedBWwDI+Bz9ARhPcCYERTKhYVF46JQ7lz0ZA/a296MfEBDP+bkseo7Xks/m2HRNallk4yvFEp1e1UQuEunIGOt/Fk35nQD0wF9ji/vTToxteXncUX7DGj32o9iYVRvVTS82pddKW/wH53d41JzfRbC5SdjgTg2ZdeEJhB1D1DaeOmH9IlvYNSuzYUX4QWtYuKvUZlwVnEcXXNexqoxa4Eci/qvYeylog6XgNRkN9FQ8sdteu0TJ1QGamvSqpnaZDZINOCBxSpcSAh+CLpyq4GTUGaR9d+Nzxh7M5gB/nSt/Oakok827g6ATgMAag==</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:KeyDescriptor use="encryption">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data>
+          <ds:X509Certificate>MIIDezCCAmOgAwIBAgIEFi0SgTANBgkqhkiG9w0BAQsFADBuMRAwDgYDVQQGEwdVbmtub3duMRAwDgYDVQQIEwdVbmtub3duMRAwDgYDVQQHEwdVbmtub3duMRAwDgYDVQQKEwdVbmtub3duMRAwDgYDVQQLEwdVbmtub3duMRIwEAYDVQQDEwlsb2NhbGhvc3QwHhcNMTgwMjA1MTMyOTM3WhcNMTgwNTA2MTMyOTM3WjBuMRAwDgYDVQQGEwdVbmtub3duMRAwDgYDVQQIEwdVbmtub3duMRAwDgYDVQQHEwdVbmtub3duMRAwDgYDVQQKEwdVbmtub3duMRAwDgYDVQQLEwdVbmtub3duMRIwEAYDVQQDEwlsb2NhbGhvc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCIKkhBZCaTtmbmyhInk/OWsg9rTfoiRfcVbjJSl2clG+cc0+wwq6C04B3u45Zynmv/HitvcYeiTEjaqcETWceqLFQTV52fNFHQ3gjjsCC4PX3/9sJOr8cDAcuGq3W2abusiTAF7469S/IKoTsQ2Hz+hWaSHzVT5KvQ9yr5kSTibeICKRq7b9lDIJX79MDkU55AEkBMPIKKUUYZNu2/V5V13TID2ungUI8D/yY5FubMbMWM0rl3asbIObdYIlA6LZrJfZPYwWN2A3zjciVHf+Z/99Cj0LIud1aD7MJ6aKBL7kWnB9um9w2QlBO3X4P1/IaS6GulS9islime8dEOYur9AgMBAAGjITAfMB0GA1UdDgQWBBQWkCTwZLqPBq6H0nbR2oRFN50CuDANBgkqhkiG9w0BAQsFAAOCAQEAGLlgtxnjBOhptcafjO6QNQFNehedBWwDI+Bz9ARhPcCYERTKhYVF46JQ7lz0ZA/a296MfEBDP+bkseo7Xks/m2HRNallk4yvFEp1e1UQuEunIGOt/Fk35nQD0wF9ji/vTToxteXncUX7DGj32o9iYVRvVTS82pddKW/wH53d41JzfRbC5SdjgTg2ZdeEJhB1D1DaeOmH9IlvYNSuzYUX4QWtYuKvUZlwVnEcXXNexqoxa4Eci/qvYeylog6XgNRkN9FQ8sdteu0TJ1QGamvSqpnaZDZINOCBxSpcSAh+CLpyq4GTUGaR9d+Nzxh7M5gB/nSt/Oakok827g6ATgMAag==</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://ubuntu.chris.com:8080/openam/SPSloRedirect/metaAlias/sp"/>
+  </md:IDPSSODescriptor>
+</md:EntityDescriptor>
