@@ -7,7 +7,7 @@
 		</encoder>
 	</appender>
 
-	
+	<logger name="org.thymeleaf" level="WARN"/>
 
 	<root level="info">
 		<appender-ref ref="STDOUT" />

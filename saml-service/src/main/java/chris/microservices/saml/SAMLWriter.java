@@ -14,7 +14,9 @@ import java.security.cert.CertificateException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
- 
+import java.util.logging.Logger;
+
+import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
 import org.opensaml.Configuration;
 import org.opensaml.DefaultBootstrap;
@@ -59,66 +61,33 @@ import org.opensaml.xml.signature.X509Certificate;
 import org.opensaml.xml.signature.X509Data;
 import org.opensaml.xml.util.XMLHelper;
 import org.w3c.dom.Element;
+
+import lombok.Data;
  
 /**
  * This is a demo class which creates a valid SAML 2.0 Assertion.
  */
 public class SAMLWriter
 {
- 
-	public static void main(String[] args) {
-    	try {
-			SAMLInputContainer input = new SAMLInputContainer();
-			input.strIssuer = "mac.chris.com:10080";
-			input.strNameID = "FQ689+xtn8Nhb2tr+DDZ1gHTIuqV";
-			input.strNameQualifier = "mac.chris.com:10080";
-			input.sessionId = "abcdedf1234567";
-			input.strSPNameQualifier = "http://ubuntu.chris.com:8080/openam";
-			input.strRecipient = "http://ubuntu.chris.com:8080/openam/spsaehandler/metaAlias/sp";
-			input.strAudienceURI = "http://ubuntu.chris.com:8080/openam";
-			
- 
-			Map customAttributes = new HashMap();
-			customAttributes.put("uid", "uid");
-			customAttributes.put("clientid", "chris");
-			
-			
- 
-			input.attributes = customAttributes;
- 
-			Assertion assertion = SAMLWriter.buildDefaultAssertion(input);
-			AssertionMarshaller marshaller = new AssertionMarshaller();
-			Element plaintextElement = marshaller.marshall(assertion);
-			String originalAssertionString = XMLHelper.nodeToString(plaintextElement);
- 
-			System.out.println("Assertion String: " + originalAssertionString);
- 
-			// TODO: now you can also add encryption....
- 
-		} catch (MarshallingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
- 
-	}
 	
-	public static Assertion getSamlAssertion() {
+	protected static Logger logger = Logger.getLogger(SAMLWriter.class.getName());
+	
+	public static Assertion getSamlAssertion(String sessionId) {
+		
 		SAMLInputContainer input = new SAMLInputContainer();
-		input.strIssuer = "mac.chris.com:10080";
-		input.strNameID = "FQ689+xtn8Nhb2tr+DDZ1gHTIuqV";
-		input.strNameQualifier = "mac.chris.com:10080";
-		input.sessionId = "abcdedf1234567";
-		input.strSPNameQualifier = "http://ubuntu.chris.com:8080/openam";
-		input.strRecipient = "http://ubuntu.chris.com:8080/openam/spsaehandler/metaAlias/sp";
-		input.strAudienceURI = "http://ubuntu.chris.com:8080/openam";
-		
+		input.setStrIssuer("http://mac.chris.com:10080/openam");
+		input.setStrNameID("idpuser");
+		input.setStrNameQualifier("http://mac.chris.com:10080/openam");
+		input.setSessionId(sessionId);
+		input.setStrSPNameQualifier("http://ubuntu.chris.com:8080/openam");
+		input.setStrRecipient("http://ubuntu.chris.com:8080/openam/Consumer/metaAlias/sp");
+		input.setStrAudienceURI("http://ubuntu.chris.com:8080/openam");
+		input.setStrAuthnContextClassRef("urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
+		//input.setStrID(DigestUtils.sha1Hex(new DateTime().toString()));
+		input.setStrID(DigestUtils.sha1Hex(new DateTime().toString()));
 		Map customAttributes = new HashMap();
-		customAttributes.put("uid", "uid");
-		customAttributes.put("clientid", "chris");
-		
-		
-
-		input.attributes = customAttributes;
+		customAttributes.put("uid", "idpuser");
+		input.setAttributes(customAttributes);
 		
 		return SAMLWriter.buildDefaultAssertion(input);
 	}
@@ -181,7 +150,7 @@ public class SAMLWriter
 	         SAMLObjectBuilder confirmationMethodBuilder = (SAMLObjectBuilder)  SAMLWriter.getSAMLBuilder().getBuilder(SubjectConfirmationData.DEFAULT_ELEMENT_NAME);
 	         SubjectConfirmationData confirmationMethod = (SubjectConfirmationData) confirmationMethodBuilder.buildObject();
 	         DateTime now = new DateTime();
-	         confirmationMethod.setNotBefore(now);
+	         //confirmationMethod.setNotBefore(now);
 	         confirmationMethod.setNotOnOrAfter(now.plusMinutes(2));
 	         confirmationMethod.setRecipient(input.getStrRecipient());
 	         
@@ -213,7 +182,7 @@ public class SAMLWriter
  
 	         SAMLObjectBuilder authContextClassRefBuilder = (SAMLObjectBuilder) SAMLWriter.getSAMLBuilder().getBuilder(AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
 	         AuthnContextClassRef authnContextClassRef = (AuthnContextClassRef) authContextClassRefBuilder.buildObject();
-	         authnContextClassRef.setAuthnContextClassRef("urn:ietf.org/loa/2fa"); // TODO not sure exactly about this
+	         authnContextClassRef.setAuthnContextClassRef(input.getStrAuthnContextClassRef());
  
 			authnContext.setAuthnContextClassRef(authnContextClassRef);
 	        authnStatement.setAuthnContext(authnContext);
@@ -239,7 +208,7 @@ public class SAMLWriter
 	         SAMLObjectBuilder conditionsBuilder = (SAMLObjectBuilder) SAMLWriter.getSAMLBuilder().getBuilder(Conditions.DEFAULT_ELEMENT_NAME);
 	         Conditions conditions = (Conditions) conditionsBuilder.buildObject();
 	         conditions.setNotBefore(now2);
-	         conditions.setNotOnOrAfter(now2.plus(input.getMaxSessionTimeoutInMinutes()));
+	         conditions.setNotOnOrAfter(now2.plus(input.getMaxSessionTimeoutInMinutes() * 1000 * 60));
 	         
 	         SAMLObjectBuilder audienceRestrictionBuilder = (SAMLObjectBuilder) SAMLWriter.getSAMLBuilder().getBuilder(AudienceRestriction.DEFAULT_ELEMENT_NAME);
 	         AudienceRestriction audienceRestriction = (AudienceRestriction) audienceRestrictionBuilder.buildObject();
@@ -261,7 +230,7 @@ public class SAMLWriter
 	         // Create the assertion
 	         SAMLObjectBuilder assertionBuilder = (SAMLObjectBuilder) SAMLWriter.getSAMLBuilder().getBuilder(Assertion.DEFAULT_ELEMENT_NAME);
 	         Assertion assertion = (Assertion) assertionBuilder.buildObject();
-	         assertion.setID("_N8LJ6lUAMesfj737QVJdrqgLRz1vWStS");
+	         assertion.setID(input.getStrID());
 	         assertion.setIssuer(issuer);
 	         assertion.setIssueInstant(now);
 	         assertion.setVersion(SAMLVersion.VERSION_20);
@@ -272,7 +241,14 @@ public class SAMLWriter
 	         
 	         assertion.setSubject(subject);
 	         
-	         
+	         AssertionMarshaller marshaller = new AssertionMarshaller();
+	         Element plain = null;
+	         try {
+	        	 plain = marshaller.marshall(assertion);
+	         }catch (MarshallingException e){
+	        	 e.printStackTrace();
+	         }
+	         System.out.println("SAMLAssertion:" + XMLHelper.nodeToString(plain));
 			return assertion;
 		}
 		catch (Exception e)
@@ -280,227 +256,6 @@ public class SAMLWriter
 			e.printStackTrace();
 		}
 		return null;
-	}
- 
-	public static class SAMLInputContainer
-	{
- 
-		public String strAudienceURI;
-		public String strRecipient;
-		private String strIssuer;
-		private String strNameID;
-		private String strNameQualifier;
-		private String sessionId;
-		private int maxSessionTimeoutInMinutes = 15; // default is 15 minutes
-		private String strSPNameQualifier;
- 
-		private Map attributes;
- 
-		/**
-		 * Returns the strIssuer.
-		 *
-		 * @return the strIssuer
-		 */
-		public String getStrIssuer()
-		{
-			return strIssuer;
-		}
- 
-		/**
-		 * Sets the strIssuer.
-		 *
-		 * @param strIssuer
-		 *            the strIssuer to set
-		 */
-		public void setStrIssuer(String strIssuer)
-		{
-			this.strIssuer = strIssuer;
-		}
- 
-		/**
-		 * Returns the strNameID.
-		 *
-		 * @return the strNameID
-		 */
-		public String getStrNameID()
-		{
-			return strNameID;
-		}
- 
-		/**
-		 * Sets the strNameID.
-		 *
-		 * @param strNameID
-		 *            the strNameID to set
-		 */
-		public void setStrNameID(String strNameID)
-		{
-			this.strNameID = strNameID;
-		}
- 
-		/**
-		 * Returns the strNameQualifier.
-		 *
-		 * @return the strNameQualifier
-		 */
-		public String getStrNameQualifier()
-		{
-			return strNameQualifier;
-		}
- 
-		/**
-		 * Sets the strNameQualifier.
-		 *
-		 * @param strNameQualifier
-		 *            the strNameQualifier to set
-		 */
-		public void setStrNameQualifier(String strNameQualifier)
-		{
-			this.strNameQualifier = strNameQualifier;
-		}
- 
-		/**
-		 * Sets the attributes.
-		 *
-		 * @param attributes
-		 *            the attributes to set
-		 */
-		public void setAttributes(Map attributes)
-		{
-			this.attributes = attributes;
-		}
- 
-		/**
-		 * Returns the attributes.
-		 *
-		 * @return the attributes
-		 */
-		public Map getAttributes()
-		{
-			return attributes;
-		}
- 
-		/**
-		 * Sets the sessionId.
-		 * @param sessionId the sessionId to set
-		 */
-		public void setSessionId(String sessionId)
-		{
-			this.sessionId = sessionId;
-		}
- 
-		/**
-		 * Returns the sessionId.
-		 * @return the sessionId
-		 */
-		public String getSessionId()
-		{
-			return sessionId;
-		}
- 
-		/**
-		 * Sets the maxSessionTimeoutInMinutes.
-		 * @param maxSessionTimeoutInMinutes the maxSessionTimeoutInMinutes to set
-		 */
-		public void setMaxSessionTimeoutInMinutes(int maxSessionTimeoutInMinutes)
-		{
-			this.maxSessionTimeoutInMinutes = maxSessionTimeoutInMinutes;
-		}
- 
-		/**
-		 * Returns the maxSessionTimeoutInMinutes.
-		 * @return the maxSessionTimeoutInMinutes
-		 */
-		public int getMaxSessionTimeoutInMinutes()
-		{
-			return maxSessionTimeoutInMinutes;
-		}
-
-		public String getStrSPNameQualifier() {
-			return strSPNameQualifier;
-		}
-
-		public void setStrSPNameQualifier(String strSPNameQualifier) {
-			this.strSPNameQualifier = strSPNameQualifier;
-		}
-
-		public String getStrRecipient() {
-			return strRecipient;
-		}
-
-		public void setStrRecipient(String strRecipient) {
-			this.strRecipient = strRecipient;
-		}
-
-		public String getStrAudienceURI() {
-			return strAudienceURI;
-		}
-
-		public void setStrAudienceURI(String strAudienceURI) {
-			this.strAudienceURI = strAudienceURI;
-		}
-
- 
-	}
-	
-
-	private static KeyInfo getKeyInfo(X509Credential signingCredential) throws SecurityException{
-		KeyInfo keyInfo=(KeyInfo)Configuration.getBuilderFactory().getBuilder(KeyInfo.DEFAULT_ELEMENT_NAME).buildObject(KeyInfo.DEFAULT_ELEMENT_NAME);
-        X509Data data=(X509Data)Configuration.getBuilderFactory().getBuilder(X509Data.DEFAULT_ELEMENT_NAME).buildObject(X509Data.DEFAULT_ELEMENT_NAME);
-        X509Certificate cert=(X509Certificate)Configuration.getBuilderFactory().getBuilder(X509Certificate.DEFAULT_ELEMENT_NAME).buildObject(X509Certificate.DEFAULT_ELEMENT_NAME);
-        String value;
-		try {
-			value = org.apache.xml.security.utils.Base64.encode(signingCredential.getEntityCertificate().getEncoded());
-			cert.setValue(value);
-	        data.getX509Certificates().add(cert);
-	        keyInfo.getX509Datas().add(data);
-	        return keyInfo;
-		} catch (CertificateEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        return null;
-	}
-
-	
-	private static X509Credential getCredential(){
-		
-		String password="password";//the password you set in the storepass
-		String alias="tomcat";//this is the alias;
-				
-		KeyStore ks;
-		try {
-			ks = KeyStore.getInstance(KeyStore.getDefaultType());
-			FileInputStream fis=new FileInputStream("/Users/chris/EclipseProjects/sample-spring-microservices/ssl/keystore");
-		    char[] pass=password.toCharArray();
-		    ks.load(fis, pass);
-		    KeyStore.PrivateKeyEntry pkEntry=null;
-		    pkEntry=(PrivateKeyEntry) ks.getEntry(alias,new KeyStore.PasswordProtection(password.toCharArray()));
-		    PrivateKey pk=pkEntry.getPrivateKey();
-		    X509Certificate certificate=(X509Certificate) pkEntry.getCertificate();
-		    BasicX509Credential basicCredential=new BasicX509Credential();
-		    basicCredential.setPrivateKey(pk);
-		    return basicCredential;
-		} catch (KeyStoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CertificateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnrecoverableEntryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	    return null;
 	}
  
 }

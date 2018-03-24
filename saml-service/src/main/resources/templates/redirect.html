@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<meta http-equiv="pragma" content="no-cache"></meta>
+	<body onload="document.forms[0].submit()">
+		<form th:action="${Action}" method="post">
+		   <div>
+		     <input type="hidden" name="RelayState" th:value="${RelayState}"/>
+		     <input type="hidden" name="SAMLResponse" th:value="${SAMLResponse}"/>
+		   </div>
+		   <div>
+		      <input type="submit" value="Continue"/>
+		   </div>
+		</form>
+	</body>
+</html>

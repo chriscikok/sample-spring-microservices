@@ -1,0 +1,30 @@
+<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="s26c43018485f517ac5bda46ff31f98db942e516ea" Version="2.0" IssueInstant="2018-03-19T12:57:48Z" Destination="http://ubuntu.chris.com:8080/openam/Consumer/metaAlias/sp">
+  <saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">http://mac.chris.com:10080/openam</saml:Issuer>
+  <samlp:Status xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol">
+    <samlp:StatusCode xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" Value="urn:oasis:names:tc:SAML:2.0:status:Success"></samlp:StatusCode>
+  </samlp:Status>
+  <saml:Assertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Version="2.0" ID="s2f7516fee44aaaa5fa5c2a1a1b4f3cfbc2c597f6c" IssueInstant="2018-03-19T12:57:48Z">
+    <saml:Issuer>http://mac.chris.com:10080/openam</saml:Issuer>
+    <saml:Subject>
+      <saml:NameID NameQualifier="http://mac.chris.com:10080/openam" SPNameQualifier="http://ubuntu.chris.com:8080/openam" Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent">3YRwnVAry5MZEGtURYz09AT/tg9g</saml:NameID>
+      <saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+        <saml:SubjectConfirmationData NotOnOrAfter="2018-03-19T13:07:48Z" Recipient="http://ubuntu.chris.com:8080/openam/Consumer/metaAlias/sp"></saml:SubjectConfirmationData>
+      </saml:SubjectConfirmation>
+    </saml:Subject>
+    <saml:Conditions NotBefore="2018-03-19T12:47:48Z" NotOnOrAfter="2018-03-19T13:07:48Z">
+      <saml:AudienceRestriction>
+        <saml:Audience>http://ubuntu.chris.com:8080/openam</saml:Audience>
+      </saml:AudienceRestriction>
+    </saml:Conditions>
+    <saml:AuthnStatement AuthnInstant="2018-03-19T12:57:48Z" SessionIndex="s2c66bcaa305a622098a0de453c3feafe264adc001">
+      <saml:AuthnContext>
+        <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef>
+      </saml:AuthnContext>
+    </saml:AuthnStatement>
+    <saml:AttributeStatement>
+      <saml:Attribute Name="mail">
+        <saml:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">idpuser@mac.chris.com</saml:AttributeValue>
+      </saml:Attribute>
+    </saml:AttributeStatement>
+  </saml:Assertion>
+</samlp:Response>
