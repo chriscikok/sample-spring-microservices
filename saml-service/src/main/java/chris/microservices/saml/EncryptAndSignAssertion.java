@@ -30,12 +30,16 @@ import org.opensaml.xml.signature.SignatureConstants;
 import org.opensaml.xml.signature.SignatureException;
 import org.opensaml.xml.signature.Signer;
 import org.opensaml.xml.util.XMLHelper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.w3c.dom.Element;
+
+import chris.microservices.saml.config.EncryptAndSignConfig;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -50,24 +54,18 @@ public class EncryptAndSignAssertion {
 
 	protected static Logger logger = Logger.getLogger(EncryptAndSignAssertion.class.getName());
 	
-	private static Credential signingCredential = null;
-    private static Credential encryptCredential = null;
+	@Autowired
+	EncryptAndSignConfig config;
+	
+	public EncryptAndSignAssertion(EncryptAndSignConfig config) {
+		this.config = config;
+	}
     
-    private static String strSigningKeyStore = "mac_openam_keystore.jks";
-    private static String strEncryptKeyCER = "sp.cer";
-    
-    final static String password = "changeit";
-    final static String certificateAliasName = "test";
-    private static String strRespId = DigestUtils.sha1Hex(new DateTime().toString());
-    private static String strRespDestination = "http://ubuntu.chris.com:8080/openam/Consumer/metaAlias/sp";
-    private static String strRespIssuer = "http://mac.chris.com:10080/openam";
-
-    @SuppressWarnings("static-access")
+	
     private void intializeCredentials() {
         KeyStore ks = null;
-        char[] password = this.password.toCharArray();
+        char[] password = config.getPassword().toCharArray();
         
-
         // Get Default Instance of KeyStore
         try {
             ks = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -78,7 +76,7 @@ public class EncryptAndSignAssertion {
 
         // /Read and Load KeyStore
         try {
-        	InputStream is = new ClassPathResource(strSigningKeyStore).getInputStream();
+        	InputStream is = new ClassPathResource(config.getStrSigningKeyStore()).getInputStream();
 ;        	ks.load(is, password);
         } catch (Exception e) {
         	e.printStackTrace();
@@ -88,8 +86,8 @@ public class EncryptAndSignAssertion {
         // Get Private Key Entry From Certificate
         KeyStore.PrivateKeyEntry pkEntry = null;
         try {
-            pkEntry = (KeyStore.PrivateKeyEntry) ks.getEntry(this.certificateAliasName, new KeyStore.PasswordProtection(
-                    this.password.toCharArray()));
+            pkEntry = (KeyStore.PrivateKeyEntry) ks.getEntry(config.getCertificateAliasName(), new KeyStore.PasswordProtection(
+                    config.getPassword().toCharArray()));
         } catch (Exception e) {
         	e.printStackTrace();
         	logger.log(Level.SEVERE, "Failed to Get Private Entry From the keystore", e);
@@ -101,13 +99,13 @@ public class EncryptAndSignAssertion {
         BasicX509Credential credential = new BasicX509Credential();
         credential.setEntityCertificate(certificate);
         credential.setPrivateKey(pk);
-        signingCredential = credential;
+        config.setSigningCredential(credential);
 
         logger.info("Private Key loaded");
         
         X509Certificate certificate2 = null;
         try{
-        	InputStream is = new ClassPathResource(EncryptAndSignAssertion.strEncryptKeyCER).getInputStream();
+        	InputStream is = new ClassPathResource(config.getStrEncryptKeyCER()).getInputStream();
         	CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
         	certificate2 = (X509Certificate) certFactory.generateCertificate(is);
         } catch (Exception e) {
@@ -115,7 +113,7 @@ public class EncryptAndSignAssertion {
         }
         BasicX509Credential credential2 = new BasicX509Credential();
         credential2.setEntityCertificate(certificate2);
-        EncryptAndSignAssertion.encryptCredential = credential2;
+        config.setEncryptCredential(credential2);
         
         logger.info("Encrypt Key loaded");
     }
@@ -136,7 +134,7 @@ public class EncryptAndSignAssertion {
                 .getBuilder(Signature.DEFAULT_ELEMENT_NAME)
                 .buildObject(Signature.DEFAULT_ELEMENT_NAME);
 
-        signature.setSigningCredential(signingCredential);
+        signature.setSigningCredential(config.getSigningCredential());
         signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
          signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1);
 
@@ -145,7 +143,7 @@ public class EncryptAndSignAssertion {
         //String keyInfoGeneratorProfile = "XMLSignature";
 
         try {
-            SecurityHelper.prepareSignatureParams(signature, signingCredential, secConfig, null);
+            SecurityHelper.prepareSignatureParams(signature, config.getSigningCredential(), secConfig, null);
         } catch (Exception e) {
         	logger.log(Level.SEVERE, "Couldn't prepare signature");
         }
@@ -172,11 +170,11 @@ public class EncryptAndSignAssertion {
         encParams.setAlgorithm(EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128);
         
         KeyEncryptionParameters kekParams = new KeyEncryptionParameters();
-        kekParams.setEncryptionCredential(EncryptAndSignAssertion.encryptCredential);
+        kekParams.setEncryptionCredential(config.getEncryptCredential());
         kekParams.setAlgorithm(EncryptionConstants.ALGO_ID_KEYTRANSPORT_RSAOAEP);
         KeyInfoGeneratorFactory kigf = org.opensaml.xml.Configuration.getGlobalSecurityConfiguration()
         		.getKeyInfoGeneratorManager()
-        		.getDefaultManager().getFactory(encryptCredential);
+        		.getDefaultManager().getFactory(config.getEncryptCredential());
         kekParams.setKeyInfoGenerator(kigf.newInstance());
         Encrypter samlEncrypter = new Encrypter(encParams, kekParams);
         samlEncrypter.setKeyPlacement(KeyPlacement.PEER);
@@ -195,9 +193,9 @@ public class EncryptAndSignAssertion {
                 .getBuilder(Response.DEFAULT_ELEMENT_NAME)
                 .buildObject(Response.DEFAULT_ELEMENT_NAME);
 
-        resp.setID(strRespId);
+        resp.setID(config.getStrRespId());
         resp.setIssueInstant(new DateTime());
-        resp.setDestination(strRespDestination);
+        resp.setDestination(config.getStrRespDestination());
         
         SAMLObjectBuilder issuerBuilder = null;
         try {
@@ -208,7 +206,7 @@ public class EncryptAndSignAssertion {
 		}
         
         Issuer issuer = (Issuer) issuerBuilder.buildObject();
-        issuer.setValue(strRespIssuer);
+        issuer.setValue(config.getStrRespIssuer());
 		resp.setIssuer(issuer);
         
         Status status = (Status) Configuration

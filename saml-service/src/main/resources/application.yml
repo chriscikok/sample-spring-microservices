@@ -1,7 +1,6 @@
-server:  
+server:
   port: ${PORT:8080}
-
-spring:  
+spring:
   application:
     name: saml-app
   logging:
@@ -10,3 +9,5 @@ spring:
     level:
       org.springframework: WARN
       org.hibernate: WARN
+my:
+  password: ENC(UwVc3gomozXpQ+YPSq8mKRqtudb9kZNs)
