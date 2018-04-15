@@ -25,7 +25,6 @@
 		<module>gateway-service</module>
 		<module>customer-service</module>
 		<module>zipkin-service</module>
-		<module>web-app</module>
 		<module>config-service</module>
 		<module>saml-service</module>
 		
